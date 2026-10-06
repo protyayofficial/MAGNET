@@ -28,13 +28,14 @@
       <p class="venue">Accepted at NeurIPS 2026</p>
       <h1 id="paper-title">MAGNET: Manifold-Aware Graph Diffusion Network for Functional Brain Connectome Generation</h1>
       <p class="authors">
-        <span>Protyay Dey<sup>*</sup></span>
-        <span>Ayush Roy<sup>*</sup></span>
-        <span>Hyuna Cho</span>
-        <span>Won Hwa Kim</span>
-        <span>Vishnu Suresh Lokhane</span>
+        <span><a href="https://protyayofficial.github.io/">Protyay Dey</a><sup>*</sup><sup>1</sup></span>
+        <span><a href="https://ayushroy2001.github.io/">Ayush Roy</a><sup>*</sup><sup>1</sup></span>
+        <span><a href="https://sites.google.com/view/hyunacho/home?pli=1&amp;authuser=0">Hyuna Cho</a><sup>2</sup></span>
+        <span><a href="https://wwplato.github.io/">Won Hwa Kim</a><sup>3</sup></span>
+        <span><a href="https://vlokhande-ub.github.io/">Vishnu Suresh Lokhane</a><sup>1</sup></span>
       </p>
       <p class="contribution"><sup>*</sup> Equal contribution</p>
+      <p class="affiliations"><sup>1</sup> University at Buffalo, SUNY &nbsp;&middot;&nbsp; <sup>2</sup> National Institutes of Health, United States &nbsp;&middot;&nbsp; <sup>3</sup> POSTECH, South Korea</p>
       <p class="hero-summary">Valid correlation geometry is only the beginning. MAGNET generates class-conditional functional connectomes while preserving finer clinical structure.</p>
       <div class="hero-actions">
         <a class="button button-primary" href="https://github.com/protyayofficial/MAGNET">Code &amp; reproduction <span aria-hidden="true">&nearr;</span></a>
@@ -51,7 +52,10 @@
     <section class="overview wrap" id="overview" aria-labelledby="overview-title">
       <div class="section-heading">
         <div><p class="eyebrow">The approach</p><h2 id="overview-title">Built around connectome geometry.</h2></div>
-        <p>MAGNET combines a normalized-Cholesky representation, ROI-level graph denoising, class-anchored conditioning, an amortized structural bridge, and relevance-preserving corruption.</p>
+        <p>MAGNET treats a connectome as a structured point on the correlation-matrix manifold. A normalized-Cholesky coordinate preserves this geometry before ROI-level graph denoising, class-anchored conditioning, an amortized structural bridge, and relevance-preserving corruption shape the diffusion process.</p>
+      </div>
+      <div class="method-detail">
+        <p>For a correlation matrix <i>C</i>, MAGNET writes <i>C = LL<sup>T</sup></i> and removes the diagonal scale from <i>L</i> before diffusing only through its strict lower triangle. With 39 MSDL regions this gives 741 latent coordinates. Decoding reconstructs the unit-lower-triangular factor, forms its Gram matrix, and renormalizes the diagonal, yielding a symmetric positive-definite correlation matrix with unit diagonal by construction.</p>
       </div>
       <a class="image-link architecture" href="assets/arch.png" target="_blank" rel="noopener noreferrer" aria-label="Open the full-resolution MAGNET architecture image">
         <img src="assets/arch.png" alt="MAGNET architecture showing correlation-matrix encoding, class-anchored conditioning, structural bridge, graph transformer denoising, and valid correlation decoding" width="1961" height="802">
@@ -62,6 +66,7 @@
         <div><strong>7-21%</strong><span>improvement in class-conditional &alpha;,&beta;-F1 across three cohorts</span></div>
         <div><strong>30%+</strong><span>improvement in zero-shot subclass covariance alignment</span></div>
       </div>
+      <p class="keywords"><strong>Keywords</strong> Generative Modeling &nbsp;&middot;&nbsp; Graph Diffusion &nbsp;&middot;&nbsp; Brain Connectome</p>
     </section>
 
     <section class="results" id="results" aria-labelledby="results-title">
