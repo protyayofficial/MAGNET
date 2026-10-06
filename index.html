@@ -3,11 +3,94 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=docs/">
-  <link rel="canonical" href="docs/">
+  <meta name="description" content="MAGNET: Manifold-Aware Graph Diffusion Network for Functional Brain Connectome Generation. NeurIPS 2026.">
+  <meta name="theme-color" content="#f7f5ef">
   <title>MAGNET | NeurIPS 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="docs/styles.css">
 </head>
 <body>
-  <p>Open the <a href="docs/">MAGNET project page</a>.</p>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="MAGNET home">MAGNET<span>.</span></a>
+    <nav aria-label="Page navigation">
+      <a href="#overview">Overview</a>
+      <a href="#results">Results</a>
+      <a href="https://github.com/protyayofficial/MAGNET">Code</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="paper-title">
+      <p class="venue">NeurIPS 2026</p>
+      <h1 id="paper-title">MAGNET: Manifold-Aware Graph Diffusion Network for Functional Brain Connectome Generation</h1>
+      <p class="authors">
+        <span>Protyay Dey<sup>*</sup></span>
+        <span>Ayush Roy<sup>*</sup></span>
+        <span>Hyuna Cho</span>
+        <span>Won Hwa Kim</span>
+        <span>Vishnu Suresh Lokhane</span>
+      </p>
+      <p class="contribution"><sup>*</sup> Equal contribution</p>
+      <p class="hero-summary">Valid correlation geometry is only the beginning. MAGNET generates class-conditional functional connectomes while preserving finer clinical structure.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="https://github.com/protyayofficial/MAGNET">Code &amp; reproduction <span aria-hidden="true">&nearr;</span></a>
+        <a class="button button-secondary" href="#overview">Explore the method <span aria-hidden="true">&darr;</span></a>
+      </div>
+    </section>
+
+    <section class="overview wrap" id="overview" aria-labelledby="overview-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">The approach</p><h2 id="overview-title">Built around connectome geometry.</h2></div>
+        <p>MAGNET combines a normalized-Cholesky representation, ROI-level graph denoising, class-anchored conditioning, an amortized structural bridge, and relevance-preserving corruption.</p>
+      </div>
+      <a class="image-link architecture" href="docs/assets/arch.png" target="_blank" rel="noopener noreferrer" aria-label="Open the full-resolution MAGNET architecture image">
+        <img src="docs/assets/arch.png" alt="MAGNET architecture showing correlation-matrix encoding, class-anchored conditioning, structural bridge, graph transformer denoising, and valid correlation decoding" width="1961" height="802">
+        <span class="image-action">View full size <span aria-hidden="true">&nearr;</span></span>
+      </a>
+      <div class="highlights" aria-label="Key findings">
+        <div><strong>6</strong><span>sampling steps</span></div>
+        <div><strong>7-21%</strong><span>improvement in class-conditional &alpha;,&beta;-F1 across three cohorts</span></div>
+        <div><strong>30%+</strong><span>improvement in zero-shot subclass covariance alignment</span></div>
+      </div>
+    </section>
+
+    <section class="results" id="results" aria-labelledby="results-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div><p class="eyebrow">The evidence</p><h2 id="results-title">Structure beyond validity.</h2></div>
+          <p>Across ABIDE, ADNI, and OASIS-3, MAGNET is evaluated for class-conditional fidelity and preservation of finer connectome structure.</p>
+        </div>
+        <div class="visual-grid">
+          <article class="visual-card">
+            <a class="image-link visual-preview" href="docs/assets/multidataset_surface_similarity.png" target="_blank" rel="noopener noreferrer" aria-label="Open the full-resolution cortical hub mismatch image">
+              <img src="docs/assets/multidataset_surface_similarity.png" alt="Cortical hub mismatch across ABIDE, ADNI, and OASIS-3" loading="lazy" width="1480" height="633">
+              <span class="image-action">View full size <span aria-hidden="true">&nearr;</span></span>
+            </a>
+            <div class="visual-copy"><h3>Cortical hub alignment</h3><p>Spatial patterns across three independent cohorts.</p></div>
+          </article>
+          <article class="visual-card">
+            <a class="image-link visual-preview samples-preview" href="docs/assets/all_datasets_split_0_class_1_sample_connectome_grid.png" target="_blank" rel="noopener noreferrer" aria-label="Open the full-resolution connectome samples image">
+              <img src="docs/assets/all_datasets_split_0_class_1_sample_connectome_grid.png" alt="Real and generated functional connectomes across ABIDE, ADNI, and OASIS-3" loading="lazy" width="4533" height="4718">
+              <span class="image-action">View full size <span aria-hidden="true">&nearr;</span></span>
+            </a>
+            <div class="visual-copy"><h3>Connectome samples</h3><p>Real and generated connectivity patterns, shown together.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing wrap" aria-label="Paper details">
+      <details>
+        <summary>Read the abstract <span aria-hidden="true">+</span></summary>
+        <p>Functional brain connectome represents neural connectivity as a matrix of pairwise interactions between brain regions. Generation of functional connectomes is not only a question of validity; rather, having satisfied the constraints on the correlation matrix, the next step is to recover the class-conditional geometry buried under coarse labels. We propose MAGNET, a Manifold-Aware Graph Diffusion Network which uses a normalized-Cholesky representation of the manifold of correlation matrices that guarantees validity. MAGNET lifts noisy latent states into ROI-level region tokens and performs denoising with a relational inductive bias over brain atlas regions. To deal with structural problems induced by coarse labels, MAGNET employs class-anchored conditioning, amortized structural bridge, and relevance-preserving corruption. Across ABIDE, ADNI, and OASIS-3, MAGNET consistently achieves favorable results compared to previous manifold-aware approaches, demonstrating improvements of 7-21% in class-conditional fidelity (&alpha;,&beta;-F1) across three cohorts and better sampling efficiency. Moreover, while training only with strict binary labels, MAGNET is capable of maintaining clinical heterogeneity through fine substructure of the connectomes in a zero-shot setting, improving subclass covariance alignment (&lambda;-MSE) by over 30%. These results suggest that geometric validity is a necessary but insufficient condition for clinical utility in connectome synthesis. Moreover, efforts in making the diffusion denoising class-conditional manifold aware finds utility beyond the highly curved brain connectome generation as this is a critical problem in various general settings.</p>
+      </details>
+      <a class="button button-primary" href="https://github.com/protyayofficial/MAGNET">Explore the code <span aria-hidden="true">&nearr;</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>MAGNET &middot; NeurIPS 2026</span><span>&copy; October 2026 Protyay Dey</span></footer>
 </body>
 </html>

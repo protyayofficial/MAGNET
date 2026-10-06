@@ -23,12 +23,12 @@ The generator is trained for 200 epochs per split with batch size 64. The main e
 ## Setup
 
 ```bash
-conda create -n nips_brain python=3.11 pip -y
-conda activate nips_brain
+conda create -n MAGNET python=3.11 pip -y
+conda activate MAGNET
 pip install -r requirements.txt
 ```
 
-The `nips_brain` environment and the shipped metric implementation are sufficient for MAGNET training and MAGNET-only evaluation; no baseline checkout is required for these commands. Use a PyTorch build compatible with your CUDA driver. GPU use is optional, but the full five-setting run is computationally expensive.
+The `MAGNET` environment and the shipped metric implementation are sufficient for MAGNET training and MAGNET-only evaluation; no baseline checkout is required for these commands. Use a PyTorch build compatible with your CUDA driver. GPU use is optional, but the full five-setting run is computationally expensive.
 
 The pinned Python dependencies match the environment used to smoke-test this release; the original baseline repositories may need additional packages. Record CUDA driver and GPU model when reporting timing results.
 
