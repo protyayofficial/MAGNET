@@ -16,7 +16,6 @@ No generator is retrained.
 from __future__ import annotations
 
 import argparse
-import os
 import pickle
 import re
 import sys
@@ -40,10 +39,9 @@ warnings.filterwarnings("ignore", category=FutureWarning, module=r"sklearn\.line
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, os.environ.get("DIFFEO_METRICS_DIR", str(ROOT / "external" / "DiffeoCFM")))
 
 from src.gdt.data import _dataset_path  # noqa: E402
-from deterministic_distribution_metrics import alpha_precision, beta_recall  # noqa: E402
+from src.gdt.distribution_metrics import alpha_precision, beta_recall  # noqa: E402
 
 
 ALLOWED_RAW_METHODS = {
@@ -347,8 +345,8 @@ def _class_conditioned_quality(
             continue
         real_flat = real_cls.reshape(len(real_cls), -1)
         fake_flat = fake_cls.reshape(len(fake_cls), -1)
-        alpha = float(alpha_precision(real_flat, fake_flat, plot_curve=False, n_jobs=1, random_state=42))
-        beta = float(beta_recall(real_flat, fake_flat, plot_curve=False, n_jobs=1, random_state=42))
+        alpha = alpha_precision(real_flat, fake_flat, random_state=42)
+        beta = beta_recall(real_flat, fake_flat, random_state=42)
         f1 = float(2 * alpha * beta / (alpha + beta + 1e-12))
         alpha_values.append(alpha)
         beta_values.append(beta)

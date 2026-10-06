@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
 
@@ -17,8 +16,8 @@ from sklearn.pipeline import make_pipeline
 
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, os.environ.get("DIFFEO_METRICS_DIR", str(ROOT / "external" / "DiffeoCFM")))
-from deterministic_distribution_metrics import alpha_precision, beta_recall  # noqa: E402
+sys.path.insert(0, str(ROOT))
+from src.gdt.distribution_metrics import alpha_precision, beta_recall  # noqa: E402
 
 
 METHODS = {
@@ -26,6 +25,7 @@ METHODS = {
     "corrcholesky_DiffeoCFM": "DiffeoCFM",
     "corrcholesky_DiffeoGauss": "DiffeoGauss",
     "strict_lower_triangular_proj_DiffeoCFM": "TriangCFM",
+    "strict_lower_triangular_DiffeoCFM": "TriangCFM",
     "corrcholesky_GDSSProj": "GDSS-proj",
 }
 METRICS = ["alpha_precision", "beta_recall", "alpha_beta_f1", "roc_auc", "f1", "accuracy", "training_time_s", "sampling_time_s"]
@@ -55,8 +55,8 @@ def _quality(real: np.ndarray, generated: np.ndarray) -> tuple[float, float]:
     real_flat = real[:length].reshape(shape)
     generated_flat = generated[:length].reshape(shape)
     return (
-        float(alpha_precision(real_flat, generated_flat, plot_curve=False, n_jobs=1, random_state=42)),
-        float(beta_recall(real_flat, generated_flat, plot_curve=False, n_jobs=1, random_state=42)),
+        alpha_precision(real_flat, generated_flat, random_state=42),
+        beta_recall(real_flat, generated_flat, random_state=42),
     )
 
 
@@ -122,6 +122,7 @@ def main() -> None:
     args = parser.parse_args()
     rows = []
     real_splits: dict[tuple[str, int], Path] = {}
+    seen_methods: set[tuple[str, str, int]] = set()
     roots = [(args.magnet_results_dir, {"corrcholesky_GDT"})]
     if args.baseline_results_dir is not None:
         roots.append((args.baseline_results_dir, set(METHODS) - {"corrcholesky_GDT"}))
@@ -137,6 +138,11 @@ def main() -> None:
             dataset = _dataset_label(dataset_folder.name)
             for file in sorted(folder.glob("split_*_covariances_val.npy")):
                 split = int(file.name.split("_")[1])
+                method = METHODS[folder.name]
+                method_key = (dataset, method, split)
+                if method_key in seen_methods:
+                    raise ValueError(f"Duplicate {method} output for {dataset} split {split}: {folder}")
+                seen_methods.add(method_key)
                 key = (dataset, split)
                 if key not in real_splits:
                     rows.append(_evaluate(folder, split, "Real Data", dataset))
@@ -146,12 +152,16 @@ def main() -> None:
                     for suffix in ("covariances_train", "covariances_val", "conditionals_train", "conditionals_val"):
                         if not np.array_equal(_array(folder, split, suffix), _array(reference, split, suffix)):
                             raise ValueError(f"Split mismatch for {dataset} split {split}: {folder} vs {reference}")
-                rows.append(_evaluate(folder, split, METHODS[folder.name], dataset))
-                print(f"Evaluated {dataset} {METHODS[folder.name]} split {split}", flush=True)
+                rows.append(_evaluate(folder, split, method, dataset))
+                print(f"Evaluated {dataset} {method} split {split}", flush=True)
     if not rows:
         parser.error("No recognized split arrays found")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     details = pd.DataFrame(rows)
+    if args.baseline_results_dir is not None:
+        missing = {"DiffeoCFM", "DiffeoGauss", "TriangCFM", "GDSS-proj"} - set(details["method"])
+        if missing:
+            print(f"Warning: baseline rows absent from comparison: {', '.join(sorted(missing))}")
     details.to_csv(args.output_dir / "split_metrics.csv", index=False)
     summary = details.groupby(["dataset", "method"], sort=True)[METRICS].agg(["mean", "std"])
     summary.columns = [f"{name}_{stat}" for name, stat in summary.columns]

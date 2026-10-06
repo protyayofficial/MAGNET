@@ -1,15 +1,12 @@
 # MAGNET
 
-**Manifold-Aware Graph Diffusion Network for Functional Brain Connectome Generation**  
-**Accepted at NeurIPS 2026**
+**Manifold-Aware Graph Diffusion Network for Functional Brain Connectome Generation** (**NeurIPS 2026**)
 
-MAGNET generates valid class-conditional correlation connectomes with a normalized Cholesky representation and a graph transformer denoiser. This public release contains the MAGNET implementation, scripts for the five Table 1 dataset/atlas settings, and MAGNET-only zero-shot evaluation. The [project page](docs/index.html) presents the method visually.
-
-Publish the **contents of this directory** as the root of a clean GitHub repository. Do not upload the full research worktree: it contains baseline code, datasets, experiment artifacts, and unpublished studies outside this release.
+MAGNET generates valid class-conditional correlation connectomes with a normalized Cholesky representation and a graph transformer denoiser. This public release contains the MAGNET implementation, scripts for the five Table 1 dataset/atlas settings, and MAGNET-only zero-shot evaluation. Please visit our [project page](https://protyayofficial.github.io/MAGNET/) for further details.
 
 ## Abstract
 
-> Functional brain connectome represents neural connectivity as a matrix of pairwise interactions between brain regions. Generation of functional connectomes is not only a question of validity; rather, having satisfied the constraints on the correlation matrix, the next step is to recover the class-conditional geometry buried under coarse labels. We propose MAGNET, a Manifold-Aware Graph Diffusion Network which uses a normalized-Cholesky representation of the manifold of correlation matrices that guarantees validity. MAGNET lifts noisy latent states into ROI-level region tokens and performs denoising with a relational inductive bias over brain atlas regions. To deal with structural problems induced by coarse labels, MAGNET employs class-anchored conditioning, amortized structural bridge, and relevance-preserving corruption. Across ABIDE, ADNI, and OASIS-3, MAGNET consistently achieves favorable results compared to previous manifold-aware approaches, demonstrating improvements of $7-21\%$ in class-conditional fidelity ($\alpha,\beta$-F1) across three cohorts and better sampling efficiency. Moreover, while training only with strict binary labels, MAGNET is capable of maintaining clinical heterogeneity through fine substructure of the connectomes in a zero-shot setting, improving subclass covariance alignment ($\lambda$-MSE) by over 30\%. These results suggest that geometric validity is a necessary but insufficient condition for clinical utility in connectome synthesis. Moreover, efforts in making the diffusion denoising class-conditional manifold aware finds utility beyond the highly curved brain connectome generation as this is a critical problem in various general settings.
+> Functional brain connectome represents neural connectivity as a matrix of pairwise interactions between brain regions. Generation of functional connectomes is not only a question of validity; rather, having satisfied the constraints on the correlation matrix, the next step is to recover the class-conditional geometry buried under coarse labels. We propose MAGNET, a Manifold-Aware Graph Diffusion Network which uses a normalized-Cholesky representation of the manifold of correlation matrices that guarantees validity. MAGNET lifts noisy latent states into ROI-level region tokens and performs denoising with a relational inductive bias over brain atlas regions. To deal with structural problems induced by coarse labels, MAGNET employs class-anchored conditioning, amortized structural bridge, and relevance-preserving corruption. Across ABIDE, ADNI, and OASIS-3, MAGNET consistently achieves favorable results compared to previous manifold-aware approaches, demonstrating improvements of $7-21$% in class-conditional fidelity ($\alpha,\beta$-F1) across three cohorts and better sampling efficiency. Moreover, while training only with strict binary labels, MAGNET is capable of maintaining clinical heterogeneity through fine substructure of the connectomes in a zero-shot setting, improving subclass covariance alignment ($\lambda$-MSE) by over 30%. These results suggest that geometric validity is a necessary but insufficient condition for clinical utility in connectome synthesis. Moreover, efforts in making the diffusion denoising class-conditional manifold aware finds utility beyond the highly curved brain connectome generation as this is a critical problem in various general settings.
 
 ## Scope
 
@@ -26,14 +23,12 @@ The generator is trained for 200 epochs per split with batch size 64. The main e
 ## Setup
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+conda create -n nips_brain python=3.11 pip -y
+conda activate nips_brain
 pip install -r requirements.txt
-mkdir -p external
-git clone https://github.com/antoinecollas/DiffeoCFM external/DiffeoCFM
 ```
 
-Install the remaining dependencies from the [DiffeoCFM repository](https://github.com/antoinecollas/DiffeoCFM) when evaluating with its metric code. Use a PyTorch build compatible with your CUDA driver. GPU use is optional, but the full five-setting run is computationally expensive.
+The `nips_brain` environment and the shipped metric implementation are sufficient for MAGNET training and MAGNET-only evaluation; no baseline checkout is required for these commands. Use a PyTorch build compatible with your CUDA driver. GPU use is optional, but the full five-setting run is computationally expensive.
 
 The pinned Python dependencies match the environment used to smoke-test this release; the original baseline repositories may need additional packages. Record CUDA driver and GPU model when reporting timing results.
 
@@ -61,7 +56,7 @@ The script writes generated and real correlation matrices, labels, groups, split
 
 Baseline source code is deliberately **not** redistributed. We used the [official DiffeoCFM code](https://github.com/antoinecollas/DiffeoCFM) for DiffeoCFM, DiffeoGauss, and projected TriangCFM, and the [official GDSS code](https://github.com/harryjo97/GDSS) for the projected GDSS variant. We are especially grateful to the DiffeoCFM authors for releasing their data loading and evaluation code. Refer to those projects for their own licenses and baseline training commands. Our GDSS-proj experiment adapted its adjacency score network to signed, continuous connectomes and projected samples to valid correlation matrices; the upstream GDSS graph benchmark alone does not reproduce that variant.
 
-For strict Table 1 comparison, use the same downloaded inputs, split indices, class labels, OAS correlation estimation, 200 epochs, and six sampling steps for every method. The upstream repositories may require configuration for these settings. The MAGNET outputs follow DiffeoCFM's `split_*` array layout. Evaluate them using the public DiffeoCFM metric definitions:
+For strict Table 1 comparison, use the same downloaded inputs, split indices, class labels, OAS correlation estimation, 200 epochs, and six sampling steps for every method. The MAGNET outputs follow DiffeoCFM's `split_*` array layout. Evaluate them with the included seeded alpha/beta metric implementation, which follows the EvaGeM protocol used by DiffeoCFM:
 
 ```bash
 python scripts/evaluate_table1.py
@@ -73,7 +68,7 @@ If you have compatible split arrays from external baseline runs, add them to the
 python scripts/evaluate_table1.py --baseline-results-dir /path/to/baseline/results
 ```
 
-This writes `results/table1_metrics/split_metrics.csv` and `comparison.csv`. The adapter checks that real train/validation arrays and labels match across methods for each split, refusing a misleading comparison otherwise. A complete all-baseline Table 1 **cannot** be rerun solely from this MAGNET-only release because the adapted baseline training code is not distributed.
+This writes `results/table1_metrics/split_metrics.csv` and `comparison.csv`. The adapter checks that real train/validation arrays and labels match across methods for each split, refusing a misleading comparison otherwise. Cloning unmodified DiffeoCFM alone does **not** reproduce the complete Table 1: its published configuration fixes the atlas to MSDL and its split RNG differs from MAGNET's train-only split seeds; AAL116/CC200 and exact split alignment need adaptation. The adapter accepts its raw triangular output and applies the published SPD projection when necessary. GDSS-proj additionally requires the signed-connectome adaptation not distributed here. To reproduce those rows, run suitably adapted external baselines and pass their matching split arrays to the adapter. Training/sampling times will vary with hardware.
 
 ## Zero-shot MAGNET
 
@@ -83,14 +78,9 @@ After generating MSDL ADNI and OASIS-3 outputs:
 bash scripts/run_zero_shot_magnet.sh
 ```
 
-The zero-shot evaluator keeps the original binary-trained MAGNET generator fixed. It uses detailed ADNI and OASIS-3 labels only for post hoc evaluation and writes split-level, class-level, and aggregate CSV files to `results/zero_shot_magnet/`. The public DiffeoCFM metric module is loaded from `external/DiffeoCFM`; no DiffeoCFM or GDSS results are evaluated by this command.
+The zero-shot evaluator keeps the original binary-trained MAGNET generator fixed. It uses detailed ADNI and OASIS-3 labels only for post hoc evaluation and writes split-level, class-level, and aggregate CSV files to `results/zero_shot_magnet/`. It uses the included seeded alpha/beta metrics; no baseline checkout or DiffeoCFM/GDSS results are required by this command.
 
-## Project page
 
-The static GitHub Pages site is in `docs/`. It includes the paper architecture figure, the cortical hub mismatch figure, and a full-resolution connectome sample grid. In GitHub repository settings, select **Pages → Deploy from a branch → main /docs**.
+## Credits
 
-## Citation and credit
-
-Please cite the accepted NeurIPS 2026 MAGNET paper when using this implementation. The camera-ready citation and paper URL can be added once their public identifiers are available. Baseline credit: [DiffeoCFM](https://github.com/antoinecollas/DiffeoCFM) and [GDSS](https://github.com/harryjo97/GDSS).
-
-Copyright © October 2026 Protyay Dey.
+We sincerely thank authors of [DiffeoCFM](https://github.com/antoinecollas/DiffeoCFM) and [GDSS](https://github.com/harryjo97/GDSS) for the code release and well maintained code repositories. 

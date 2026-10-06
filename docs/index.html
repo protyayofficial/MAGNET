@@ -98,9 +98,9 @@
       <div><p class="kicker">04 / Reproducibility</p><h2>Run the study.</h2><p>MAGNET code and the five dataset/atlas settings are packaged for release. Baseline implementations remain in their original repositories.</p></div>
       <div class="code-block"><div class="code-head"><span class="code-light"></span> Terminal <span>01</span></div><pre><code>git clone https://github.com/protyayofficial/MAGNET.git
 cd MAGNET
+conda create -n nips_brain python=3.11 pip -y
+conda activate nips_brain
 pip install -r requirements.txt
-mkdir -p external
-git clone https://github.com/antoinecollas/DiffeoCFM external/DiffeoCFM
 python scripts/download_dense_abide.py
 CUDA_VISIBLE_DEVICES=0 bash scripts/run_table1_magnet.sh
 python scripts/evaluate_table1.py
