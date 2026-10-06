@@ -16,7 +16,8 @@
   <header class="site-header">
     <a class="brand" href="#top" aria-label="MAGNET home">MAGNET<span>.</span></a>
     <nav aria-label="Page navigation">
-      <a href="#overview">Overview</a>
+      <a href="#abstract">Abstract</a>
+      <a href="#overview">Method</a>
       <a href="#results">Results</a>
       <a href="https://github.com/protyayofficial/MAGNET">Code</a>
     </nav>
@@ -24,7 +25,7 @@
 
   <main id="main">
     <section class="hero" id="top" aria-labelledby="paper-title">
-      <p class="venue">NeurIPS 2026</p>
+      <p class="venue">Accepted at NeurIPS 2026</p>
       <h1 id="paper-title">MAGNET: Manifold-Aware Graph Diffusion Network for Functional Brain Connectome Generation</h1>
       <p class="authors">
         <span>Protyay Dey<sup>*</sup></span>
@@ -39,6 +40,12 @@
         <a class="button button-primary" href="https://github.com/protyayofficial/MAGNET">Code &amp; reproduction <span aria-hidden="true">&nearr;</span></a>
         <a class="button button-secondary" href="#overview">Explore the method <span aria-hidden="true">&darr;</span></a>
       </div>
+    </section>
+
+    <section class="abstract-section wrap" id="abstract" aria-labelledby="abstract-title">
+      <p class="eyebrow">Abstract</p>
+      <h2 id="abstract-title">Recovering class-conditional geometry in functional connectomes.</h2>
+      <p>Functional brain connectome represents neural connectivity as a matrix of pairwise interactions between brain regions. Generation of functional connectomes is not only a question of validity; rather, having satisfied the constraints on the correlation matrix, the next step is to recover the class-conditional geometry buried under coarse labels. We propose MAGNET, a Manifold-Aware Graph Diffusion Network which uses a normalized-Cholesky representation of the manifold of correlation matrices that guarantees validity. MAGNET lifts noisy latent states into ROI-level region tokens and performs denoising with a relational inductive bias over brain atlas regions. To deal with structural problems induced by coarse labels, MAGNET employs class-anchored conditioning, amortized structural bridge, and relevance-preserving corruption. Across ABIDE, ADNI, and OASIS-3, MAGNET consistently achieves favorable results compared to previous manifold-aware approaches, demonstrating improvements of 7-21% in class-conditional fidelity (&alpha;,&beta;-F1) across three cohorts and better sampling efficiency. Moreover, while training only with strict binary labels, MAGNET is capable of maintaining clinical heterogeneity through fine substructure of the connectomes in a zero-shot setting, improving subclass covariance alignment (&lambda;-MSE) by over 30%. These results suggest that geometric validity is a necessary but insufficient condition for clinical utility in connectome synthesis. Moreover, efforts in making the diffusion denoising class-conditional manifold aware finds utility beyond the highly curved brain connectome generation as this is a critical problem in various general settings.</p>
     </section>
 
     <section class="overview wrap" id="overview" aria-labelledby="overview-title">
@@ -82,11 +89,7 @@
       </div>
     </section>
 
-    <section class="closing wrap" aria-label="Paper details">
-      <details>
-        <summary>Read the abstract <span aria-hidden="true">+</span></summary>
-        <p>Functional brain connectome represents neural connectivity as a matrix of pairwise interactions between brain regions. Generation of functional connectomes is not only a question of validity; rather, having satisfied the constraints on the correlation matrix, the next step is to recover the class-conditional geometry buried under coarse labels. We propose MAGNET, a Manifold-Aware Graph Diffusion Network which uses a normalized-Cholesky representation of the manifold of correlation matrices that guarantees validity. MAGNET lifts noisy latent states into ROI-level region tokens and performs denoising with a relational inductive bias over brain atlas regions. To deal with structural problems induced by coarse labels, MAGNET employs class-anchored conditioning, amortized structural bridge, and relevance-preserving corruption. Across ABIDE, ADNI, and OASIS-3, MAGNET consistently achieves favorable results compared to previous manifold-aware approaches, demonstrating improvements of 7-21% in class-conditional fidelity (&alpha;,&beta;-F1) across three cohorts and better sampling efficiency. Moreover, while training only with strict binary labels, MAGNET is capable of maintaining clinical heterogeneity through fine substructure of the connectomes in a zero-shot setting, improving subclass covariance alignment (&lambda;-MSE) by over 30%. These results suggest that geometric validity is a necessary but insufficient condition for clinical utility in connectome synthesis. Moreover, efforts in making the diffusion denoising class-conditional manifold aware finds utility beyond the highly curved brain connectome generation as this is a critical problem in various general settings.</p>
-      </details>
+    <section class="closing wrap" aria-label="Code access">
       <a class="button button-primary" href="https://github.com/protyayofficial/MAGNET">Explore the code <span aria-hidden="true">&nearr;</span></a>
     </section>
   </main>
