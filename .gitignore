@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+.nilearn_data/
+external/
+results/
+data_atlas_*/
+*.zip
+*.pkl
+*.npy
+*.npz
+*.pt
+*.pth
+*.log
+.DS_Store
